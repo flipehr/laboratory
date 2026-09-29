@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laboratorio Virtual - Ley de Charles</title>
+<title>Laboratorio Virtual: Presión Misteriosa</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <h1>🔬 Laboratorio Virtual: Ley de Charles</h1>
-  <p class="subtitle">V / T = constante (a presión constante)</p>
+  <h1>🔬 Presión Misteriosa</h1>
+  <p class="subtitle">Descubre la presión del gas con PV = nRT</p>
 </header>
 
 <main>
@@ -18,28 +18,30 @@
   <!-- PANTALLA 1: INTRO -->
   <section id="pantallaIntro" class="pantalla">
     <h2>Bienvenido al laboratorio</h2>
-    <p>Vas a comprobar experimentalmente la <strong>Ley de Charles</strong>:
-    a presión constante, el volumen de un gas es directamente proporcional
-    a su temperatura absoluta.</p>
+    <p>Tienes un cilindro sellado con un pistón móvil. Sobre el pistón hay un peso
+    que mantiene la <strong>presión constante</strong> dentro del gas. Tu misión es
+    descubrir <strong>cuál es esa presión</strong>.</p>
+
+    <div class="datos-sesion">
+      <div class="dato">
+        <span class="dato-label">Cantidad de gas (n)</span>
+        <span class="dato-valor"><span id="nValor">—</span> mol</span>
+      </div>
+      <div class="dato">
+        <span class="dato-label">Constante R</span>
+        <span class="dato-valor">8314 kPa·mL/(mol·K)</span>
+      </div>
+    </div>
 
     <div class="instrucciones">
-      <h3>🎯 Objetivo</h3>
-      <p>Determina el valor de la constante <em>k = V / T</em> del gas encerrado en el pistón.</p>
-
       <h3>📋 Pasos</h3>
       <ol>
-        <li>Ajusta la temperatura con el deslizador.</li>
-        <li>Observa cómo se mueve el pistón.</li>
+        <li>Ajusta la temperatura del gas con el deslizador.</li>
         <li>Registra al menos <strong>4 mediciones</strong> a temperaturas distintas.</li>
-        <li>Pasa al análisis, completa la tabla y calcula la constante.</li>
+        <li>En el análisis, calcula la presión <em>P<sub>i</sub></em> en cada fila.</li>
+        <li>Calcula la presión promedio y escríbela.</li>
         <li>El sistema te dirá qué tan cerca estás del valor real.</li>
       </ol>
-
-      <h3>⚠️ Cuidado con...</h3>
-      <ul>
-        <li>Las unidades de temperatura (¿Celsius o Kelvin?).</li>
-        <li>Leer bien los valores del instrumento.</li>
-      </ul>
     </div>
 
     <button id="btnComenzar" class="btn-grande">Comenzar experimento</button>
@@ -50,12 +52,20 @@
     <div class="lab-grid">
 
       <div class="panel-montaje">
-        <svg id="montaje" viewBox="0 0 220 320" xmlns="http://www.w3.org/2000/svg">
-          <rect x="50" y="50" width="120" height="220" fill="none" stroke="#333" stroke-width="4"/>
-          <rect id="gas" x="52" y="100" width="116" height="168" fill="hsl(220,80%,60%)"/>
-          <rect id="piston" x="46" y="85" width="128" height="16" fill="#888" rx="2"/>
-          <rect id="rod" x="103" y="20" width="14" height="70" fill="#aaa"/>
-          <rect x="30" y="270" width="160" height="10" fill="#333"/>
+        <svg id="montaje" viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg">
+          <!-- cilindro -->
+          <rect x="50" y="60" width="120" height="240" fill="none" stroke="#94a3b8" stroke-width="4"/>
+          <!-- gas -->
+          <rect id="gas" x="52" y="110" width="116" height="188" fill="hsl(220,80%,60%)"/>
+          <!-- pistón -->
+          <rect id="piston" x="46" y="95" width="128" height="16" fill="#cbd5e1" rx="2"/>
+          <!-- varilla -->
+          <rect id="rod" x="103" y="30" width="14" height="70" fill="#94a3b8"/>
+          <!-- peso -->
+          <rect id="peso" x="76" y="10" width="68" height="22" fill="#475569" rx="3" stroke="#64748b" stroke-width="2"/>
+          <text id="pesoTexto" x="110" y="26" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="sans-serif">PESO</text>
+          <!-- base -->
+          <rect x="30" y="300" width="160" height="10" fill="#475569"/>
         </svg>
 
         <div class="lecturas">
@@ -65,23 +75,23 @@
           </div>
           <div class="lectura">
             <span class="lectura-label">Volumen</span>
-            <span class="lectura-valor"><span id="volLabel">50.0</span> mL</span>
+            <span class="lectura-valor"><span id="volLabel">—</span> mL</span>
           </div>
         </div>
 
         <div class="grafica-wrapper">
           <div class="grafica-header">
-            <span>Gráfica V vs T</span>
-            <button id="btnUnidad" class="btn-mini">Eje X: °C</button>
+            <span>V vs T</span>
+            <span id="ecuacionMini" class="ecuacion">—</span>
           </div>
-          <canvas id="grafica" width="340" height="240"></canvas>
+          <canvas id="graficaChica" width="340" height="220"></canvas>
         </div>
       </div>
 
       <div class="panel-control">
         <h3>Control de temperatura</h3>
-        <input type="range" id="sliderT" min="0" max="100" step="1" value="25">
-        <div class="slider-labels"><span>0 °C</span><span>100 °C</span></div>
+        <input type="range" id="sliderT" min="0" max="150" step="1" value="25">
+        <div class="slider-labels"><span>0 °C</span><span>150 °C</span></div>
 
         <button id="btnRegistrar" class="btn">📌 Registrar medición</button>
 
@@ -100,23 +110,38 @@
   <!-- PANTALLA 3: ANÁLISIS -->
   <section id="pantallaAnalisis" class="pantalla" hidden>
     <h2>Análisis de datos</h2>
-    <p>Completa la tabla. Recuerda: la Ley de Charles usa
-    <strong>temperatura absoluta</strong>.</p>
+    <p>Calcula la presión <em>P<sub>i</sub></em> para cada medición usando la ley de los gases ideales.
+    Luego escribe el valor promedio.</p>
 
-    <table id="tablaAnalisis" class="tabla tabla-analisis">
-      <thead>
-        <tr><th>#</th><th>T (°C)</th><th>V (mL)</th><th>T (K)</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="analisis-grid">
+      <div>
+        <table id="tablaAnalisis" class="tabla tabla-analisis">
+          <thead>
+            <tr><th>#</th><th>T (°C)</th><th>V (mL)</th><th>P<sub>i</sub> (kPa)</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-    <div class="campo-final">
-      <label for="inputK">Tu valor de la constante k:</label>
-      <input type="number" id="inputK" step="0.0001" placeholder="Ej: 0.1685">
-      <span class="unidades">mL/K</span>
+        <div class="campo-final">
+          <label for="inputP">Presión promedio (kPa):</label>
+          <input type="text" id="inputP" inputmode="decimal" placeholder="Ej: 132.5">
+        </div>
+
+        <button id="btnVerificar" class="btn-grande">✅ Verificar resultado</button>
+      </div>
+
+      <div>
+        <div class="grafica-wrapper">
+          <div class="grafica-header">
+            <span>Gráfica V vs T</span>
+            <button id="btnUnidad" class="btn-mini" hidden>Eje X: °C</button>
+          </div>
+          <canvas id="graficaGrande" width="480" height="320"></canvas>
+          <div id="infoGrafica" class="info-grafica"></div>
+        </div>
+      </div>
     </div>
 
-    <button id="btnVerificar" class="btn-grande">✅ Verificar resultado</button>
     <div id="feedback" class="feedback" hidden></div>
   </section>
 
