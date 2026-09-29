@@ -38,8 +38,12 @@
       <ol>
         <li>Ajusta la temperatura del gas con el deslizador.</li>
         <li>Registra al menos <strong>4 mediciones</strong> a temperaturas distintas.</li>
-        <li>En el análisis, calcula la presión <em>P<sub>i</sub></em> en cada fila.</li>
-        <li>Calcula la presión promedio y escríbela.</li>
+        <li>En el análisis, calcula la presión con <em>una</em> de las dos rutas:
+          <ul>
+            <li><strong>Ruta A</strong>: calcular P<sub>i</sub> fila por fila y promediar.</li>
+            <li><strong>Ruta B</strong>: usar la pendiente <em>m</em> de la gráfica y aplicar P = n·R / m.</li>
+          </ul>
+        </li>
         <li>El sistema te dirá qué tan cerca estás del valor real.</li>
       </ol>
     </div>
@@ -49,22 +53,21 @@
 
   <!-- PANTALLA 2: LABORATORIO -->
   <section id="pantallaLab" class="pantalla" hidden>
+    <div class="barra-datos">
+      <span>n = <strong id="nLab">—</strong> mol</span>
+      <span>R = <strong>8314</strong> kPa·mL/(mol·K)</span>
+    </div>
+
     <div class="lab-grid">
 
       <div class="panel-montaje">
         <svg id="montaje" viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- cilindro -->
           <rect x="50" y="60" width="120" height="240" fill="none" stroke="#94a3b8" stroke-width="4"/>
-          <!-- gas -->
           <rect id="gas" x="52" y="110" width="116" height="188" fill="hsl(220,80%,60%)"/>
-          <!-- pistón -->
           <rect id="piston" x="46" y="95" width="128" height="16" fill="#cbd5e1" rx="2"/>
-          <!-- varilla -->
           <rect id="rod" x="103" y="30" width="14" height="70" fill="#94a3b8"/>
-          <!-- peso -->
           <rect id="peso" x="76" y="10" width="68" height="22" fill="#475569" rx="3" stroke="#64748b" stroke-width="2"/>
           <text id="pesoTexto" x="110" y="26" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="sans-serif">PESO</text>
-          <!-- base -->
           <rect x="30" y="300" width="160" height="10" fill="#475569"/>
         </svg>
 
@@ -110,11 +113,17 @@
   <!-- PANTALLA 3: ANÁLISIS -->
   <section id="pantallaAnalisis" class="pantalla" hidden>
     <h2>Análisis de datos</h2>
-    <p>Calcula la presión <em>P<sub>i</sub></em> para cada medición usando la ley de los gases ideales.
-    Luego escribe el valor promedio.</p>
+    <p>Elige <strong>una de las dos rutas</strong> para calcular la presión. Si quieres,
+    puedes hacer las dos y comparar.</p>
+
+    <div class="barra-datos">
+      <span>n = <strong id="nAnalisis">—</strong> mol</span>
+      <span>R = <strong>8314</strong> kPa·mL/(mol·K)</span>
+    </div>
 
     <div class="analisis-grid">
       <div>
+        <h3>Ruta A — Fila por fila</h3>
         <table id="tablaAnalisis" class="tabla tabla-analisis">
           <thead>
             <tr><th>#</th><th>T (°C)</th><th>V (mL)</th><th>P<sub>i</sub> (kPa)</th></tr>
@@ -124,24 +133,32 @@
 
         <div class="campo-final">
           <label for="inputP">Presión promedio (kPa):</label>
-          <input type="text" id="inputP" inputmode="decimal" placeholder="Ej: 132.5">
+          <input type="text" id="inputP" inputmode="decimal" placeholder="Ej: 132,5">
         </div>
-
-        <button id="btnVerificar" class="btn-grande">✅ Verificar resultado</button>
       </div>
 
       <div>
+        <h3>Ruta B — Con la gráfica</h3>
         <div class="grafica-wrapper">
           <div class="grafica-header">
             <span>Gráfica V vs T</span>
             <button id="btnUnidad" class="btn-mini" hidden>Eje X: °C</button>
           </div>
-          <canvas id="graficaGrande" width="480" height="320"></canvas>
+          <canvas id="graficaGrande" width="480" height="300"></canvas>
           <div id="infoGrafica" class="info-grafica"></div>
+        </div>
+
+        <div class="ruta-b">
+          <p class="ruta-b-formula">P = <span class="frac"><span>n · R</span><span>m</span></span></p>
+          <div class="campo-final">
+            <label for="inputPGrafica">Tu P por esta ruta (kPa):</label>
+            <input type="text" id="inputPGrafica" inputmode="decimal" placeholder="Opcional">
+          </div>
         </div>
       </div>
     </div>
 
+    <button id="btnVerificar" class="btn-grande">✅ Verificar resultado</button>
     <div id="feedback" class="feedback" hidden></div>
   </section>
 
